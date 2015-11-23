@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="ThemeHouse_MarkAsRead" title="[⌂] Mark as Read" version_string="1.0.0" version_id="1447261019" url="http://xf.themehouse.io/" install_callback_class="ThemeHouse_Install" install_callback_method="install" uninstall_callback_class="ThemeHouse_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates/>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="ThemeHouse_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="ThemeHouse_MarkAsRead_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="ThemeHouse_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_MarkAsRead_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_Thread" description="XenForo_Model_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_MarkAsRead_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerPublic_Thread" description="XenForo_ControllerPublic_Thread (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_MarkAsRead_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_Feed" description="XenForo_Model_Feed (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="ThemeHouse_MarkAsRead_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="ThemeHouse_MarkAsRead_Listener_LoadClass" callback_method="loadClassModel" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="th_markAsRead" display_order="2000" debug_only="0"/>
+    <option option_id="th_markAsRead_markFeedsRead" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params/>
+      <sub_options/>
+      <relation group_id="th_markAsRead" display_order="1"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions>
+      <permission permission_group_id="forum" permission_id="markThreadGlobalRead" permission_type="flag" default_value="unset" interface_group_id="forumModeratorPermissions" display_order="2"/>
+      <permission permission_group_id="forum" permission_id="markThreadRead" permission_type="flag" default_value="unset" interface_group_id="forumPermissions" display_order="7"/>
+    </permissions>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_th_markAsRead" version_id="1431956153" version_string="1.0.0"><![CDATA[Mark as Read by ThemeHouse]]></phrase>
+    <phrase title="option_group_th_markAsRead_description" version_id="1431956153" version_string="1.0.0"><![CDATA[Options for the Mark as Read by ThemeHouse add-on.]]></phrase>
+    <phrase title="option_th_markAsRead_markFeedsRead" version_id="1431956153" version_string="1.0.0"><![CDATA[Mark feeder entries as read for everyone]]></phrase>
+    <phrase title="option_th_markAsRead_markFeedsRead_explain" version_id="1431956153" version_string="1.0.0"><![CDATA[]]></phrase>
+    <phrase title="permission_forum_markThreadGlobalRead" version_id="1431956153" version_string="1.0.0"><![CDATA[Mark thread as read for everyone]]></phrase>
+    <phrase title="permission_forum_markThreadRead" version_id="1431956153" version_string="1.0.0"><![CDATA[Mark thread as read]]></phrase>
+    <phrase title="th_confirm_mark_thread_read_everyone_markasread" version_id="1431956153" version_string="1.0.0"><![CDATA[Are you sure you want to mark the thread '<strong>{title}</strong>' as read for everyone?]]></phrase>
+    <phrase title="th_confirm_mark_thread_read_markasread" version_id="1431956153" version_string="1.0.0"><![CDATA[Are you sure you want to mark the thread '<strong>{title}</strong>' as read?]]></phrase>
+    <phrase title="th_mark_as_read_for_everyone_markasread" version_id="1431956153" version_string="1.0.0"><![CDATA[Mark as Read for Everyone]]></phrase>
+    <phrase title="th_thread_marked_as_read_markasread" version_id="1431956153" version_string="1.0.0"><![CDATA[Thread marked as read.]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates>
+    <template title="th_mark_thread_read_confirm_markasread" version_id="1431956153" version_string="1.0.0"><![CDATA[<xen:title>{xen:phrase mark_as_read}: {xen:helper threadPrefix, $thread, escaped}{$thread.title}</xen:title>
+<xen:h1>{xen:phrase mark_as_read}: {xen:helper threadPrefix, $thread}{$thread.title}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb source="$nodeBreadCrumbs" />
+	<xen:breadcrumb href="{xen:link full:threads, $thread}">{xen:helper threadPrefix, $thread}{$thread.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:container var="$bodyClasses">{xen:helper nodeClasses, $nodeBreadCrumbs, $forum}</xen:container>
+<xen:container var="$searchBar.thread"><xen:include template="search_bar_thread_only" /></xen:container>
+<xen:container var="$searchBar.forum"><xen:include template="search_bar_forum_only" /></xen:container>
+
+<form action="{xen:link 'threads/mark-as-read', $thread, 'global={$global}'}" method="post" class="xenForm formOverlay AutoValidator">
+
+	<xen:if is="{$global}">
+		<p>{xen:phrase th_confirm_mark_thread_read_everyone_markasread, 'title={$thread.title}'}</p>
+	<xen:else />
+		<p>{xen:phrase th_confirm_mark_thread_read_markasread, 'title={$thread.title}'}</p>
+	</xen:if>
+
+	<dl class="ctrlUnit submitUnit">
+		<dt></dt>
+		<dd><input type="submit" value="{xen:phrase mark_as_read}" class="button primary" /></dd>
+	</dl>
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+  </templates>
+  <public_template_modifications>
+    <modification template="footer" modification_key="th_copyrightNotice_markAsRead" description="Copyright notice for [⌂] Mark as Read" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="thread_view" modification_key="th_threadView_markAsRead" description="Add mark as read options to Thread Tools." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:hook name="thread_view_tools_links"[^>]*>#U]]></find>
+      <replace><![CDATA[<xen:if is="{$canMarkThreadRead}">
+	<li><a href="{xen:link 'threads/mark-as-read', $thread}" class="OverlayTrigger">{xen:phrase mark_as_read}</a></li>
+</xen:if>
+<xen:if is="{$canMarkThreadGlobalRead}">
+	<li><a href="{xen:link 'threads/mark-as-read', $thread, 'global=1'}" class="OverlayTrigger">{xen:phrase th_mark_as_read_for_everyone_markasread}</a></li>
+</xen:if>
+${0}]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
